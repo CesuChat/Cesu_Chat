@@ -2,6 +2,7 @@ import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, OnGat
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { SendMessageDto } from './dto/send-message.dto';
+import { FriendshipService } from '../friends/friendship.service';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -10,11 +11,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private users: { [username: string]: Socket } = {};
 
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly friendshipService: FriendshipService,
+  ) {}
 
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() data: SendMessageDto, client: Socket) {
+    const { to, message } = data;
+
     const recipientSocket = this.users[data.to];
+
+    const areFriends = await this.friendshipService.areFriends(Number(client.id), Number(to));
+
+    if (!areFriends) {
+      client.emit('error', { message: `Você não pode enviar mensagens para ${to}. Vocês não são seus amigos.` });
+      return;
+    }
 
     if (recipientSocket) {
       recipientSocket.emit('message', {

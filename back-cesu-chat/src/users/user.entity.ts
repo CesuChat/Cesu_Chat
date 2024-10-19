@@ -1,5 +1,6 @@
-// users/user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Friendship } from '../friends/friendship.entity';
+import { FriendshipRequest} from '../friends/friendship.request';
 
 @Entity('user')
 export class User {
@@ -26,4 +27,13 @@ export class User {
 
   @Column({ nullable: true })
   resetToken: string; 
+
+  @OneToMany(() => Friendship, friendship => friendship.user)
+  friendships: Friendship[];
+
+  @OneToMany(() => FriendshipRequest, request => request.from)
+  sentRequests: FriendshipRequest[];
+
+  @OneToMany(() => FriendshipRequest, request => request.to)
+  receivedRequests: FriendshipRequest[];
 }

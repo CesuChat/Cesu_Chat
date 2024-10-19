@@ -8,6 +8,9 @@ import { User } from './users/user.entity';
 import { Message } from './chat/message.entity'; 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { Friendship } from './friends/friendship.entity';
+import { FriendshipRequest } from './friends/friendship.request';
+import { FriendshipModule } from './friends/friendship.module';
 
 @Module({
   imports: [
@@ -24,12 +27,13 @@ import { join } from 'path';
       username: 'chatcesu',
       password: 'chatcesu123',
       database: 'chatcesu',
-      entities: [User, Message], 
+      entities: [User, Message, Friendship, FriendshipRequest], 
       synchronize: true, 
     }),
     AuthModule,
     UsersModule,
     ChatModule,
+    FriendshipModule,
   ],
 })
 export class AppModule {}
