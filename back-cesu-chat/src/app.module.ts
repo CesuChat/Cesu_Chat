@@ -18,7 +18,7 @@ import { FriendshipModule } from './friends/friendship.module';
       isGlobal: true, 
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'front-cesu-chat'),
+      rootPath: join(__dirname, '..', '..', 'front-cesu-chat', 'login'),
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
