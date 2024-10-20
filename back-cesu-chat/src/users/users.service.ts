@@ -11,7 +11,11 @@ export class UsersService {
   ) {}
 
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { username }, select: ['id', 'username', 'password'] });
+    return this.usersRepository.findOne({ where: { username }, select: ['id', 'username', 'password', 'isActive'] });
+  }
+
+  async findByIsActive(isActive: boolean): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { isActive } });
   }
   
   async findOne(id: number): Promise<User> {
