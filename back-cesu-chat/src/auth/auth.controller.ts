@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Param, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -17,12 +17,18 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-  @Post('verify-email/:id')
+  @Get('verify-email/:id')
   async verifyEmail(
     @Param('id') id: number, 
-    @Body('token') token: string
+    @Query('token') token: string, 
+    @Res() res
   ) {
-    return this.authService.verifyEmail(id, token);
+    try {
+      const result = await this.authService.verifyEmail(id, token);
+      return res.redirect('/verification-success'); 
+    } catch (error) {
+      return res.redirect('/verification-failed'); 
+    }
   }
   
   @Post('request-password-reset')
