@@ -41,7 +41,7 @@ export class AuthService {
     });
 
 
-    await this.mailService.sendVerificationEmail(email, verificationToken);
+    await this.mailService.sendVerificationEmail(email, verificationToken, user.id);
 
     return { message: 'Verifique seu email para ativar a conta.' };
   }

@@ -17,8 +17,8 @@ export class MailService {
     });
   }
 
-  async sendVerificationEmail(to: string, token: string) {
-    const url = `http://localhost:3000/auth/verify-email?token=${token}`;
+  async sendVerificationEmail(to: string, token: string, userId: number) {
+    const url = `http://localhost:3000/auth/verify-email/${userId}?token=${token}`;
     await this.transporter.sendMail({
       from: '"Chat App" <no-reply@example.com>',
       to,
@@ -26,7 +26,7 @@ export class MailService {
       text: `Clique no link para confirmar seu email: ${url}`,
       html: `<b>Clique no link para confirmar seu email:</b> <a href="${url}">${url}</a>`,
     });
-  }
+  }  
 
   async sendPasswordResetEmail(to: string, token: string) {
     const url = `http://localhost:3000/auth/reset-password?token=${token}`;
