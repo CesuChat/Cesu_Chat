@@ -29,28 +29,38 @@ export class AuthService {
     }
   
     const hashedPassword = await bcrypt.hash(password, 10);
+    const verificationToken = uuidv4();
+
     const user = await this.usersService.create({
       username,
       password: hashedPassword,
       email, 
       curse,
       isActive: false, 
-      verificationToken: uuidv4(), 
+      verificationToken, 
     });
 
 
-    await this.mailService.sendVerificationEmail(email, user.verificationToken);
+    await this.mailService.sendVerificationEmail(email, verificationToken);
 
     return { message: 'Verifique seu email para ativar a conta.' };
   }
 
-  async verifyEmail(token: string) {
-    const user = await this.usersService.findByVerificationToken(token);
+  async verifyEmail(id: number, token: string) {
+    const user = await this.usersService.findOne(id);
+
     if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    console.log('Token armazenado:', user.verificationToken);
+
+    if (user.verificationToken !== token) {
       throw new UnauthorizedException('Token inválido ou expirado');
     }
-    user.isActive = true; 
-    await this.usersService.update(user.id, user);
+
+    await this.usersService.update(user.id, { isActive: true, verificationToken: null });
+
     return { message: 'Email verificado com sucesso!' };
   }
   
@@ -61,6 +71,10 @@ export class AuthService {
     const user = await this.usersService.findByUsername(username);
     if (!user) {
       throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('Conta inativa. Por favor, ative seu email para continuar.');
     }
   
     const isPasswordValid = await bcrypt.compare(password, user.password);
