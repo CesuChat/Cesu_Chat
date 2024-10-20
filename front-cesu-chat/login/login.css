@@ -1,0 +1,37 @@
+.container {
+    display: flex;
+}
+
+img {
+    width: 250px;
+}
+
+.form-control {
+    width: 500px;
+    height: 46px;
+    border: 1px solid #0097B2 !important;
+    border-radius: 6px;
+}
+
+.login-texto {
+    color: #0097B2;
+    font-size: 46px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 12px;
+    padding: 30px;
+}
+
+.botoes a {
+    text-decoration: none !important;
+    color: #0097B2 !important;
+}
+
+.btn {
+    display: inline-flex;
+    font-weight: 700;
+    padding: 16px 20px;
+    background-color: #0097B2 !important;
+    border: none !important;
+    border-radius: 6px;
+}
