@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
         if (response.ok) {
           alert('Cadastro realizado com sucesso! Verifique seu email para ativar sua conta.');
-          window.location.href = '/login.html';
+          window.location.href = '/index.html';
         } else {
           alert(data.message || 'Erro ao realizar o cadastro.');
         }

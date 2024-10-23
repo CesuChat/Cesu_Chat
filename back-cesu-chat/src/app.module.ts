@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
 import { User } from './users/user.entity'; 
-import { Message } from './chat/message.entity'; 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { Friendship } from './friends/friendship.entity';
@@ -18,7 +17,8 @@ import { FriendshipModule } from './friends/friendship.module';
       isGlobal: true, 
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'front-cesu-chat', 'login'),
+      rootPath: join(__dirname, '..', '..', 'front-cesu-chat', 'login'), 
+      serveRoot: '/', 
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -27,7 +27,7 @@ import { FriendshipModule } from './friends/friendship.module';
       username: 'chatcesu',
       password: 'chatcesu123',
       database: 'chatcesu',
-      entities: [User, Message, Friendship, FriendshipRequest], 
+      entities: [User, Friendship, FriendshipRequest], 
       synchronize: true, 
     }),
     AuthModule,

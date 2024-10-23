@@ -10,14 +10,15 @@ import { MailModule } from './mail.module';
 @Module({
   imports: [
     UsersModule,
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }), 
     JwtModule.register({
-      secret: 'lmevgf_CesuChat', //lmevgf são as iniciais dos criadores do ChatCesu
+      secret: 'lmevgf_CesuChat', 
       signOptions: { expiresIn: '60m' }, 
     }),
-    MailModule
+    MailModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
+  exports: [PassportModule, JwtModule], 
 })
 export class AuthModule {}

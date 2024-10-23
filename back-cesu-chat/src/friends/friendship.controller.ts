@@ -1,6 +1,8 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Request, NotFoundException, UnauthorizedException, UseGuards, Patch, Delete } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FriendshipService } from './friendship.service';
 import { UsersService } from '../users/users.service';
+import { FriendshipRequestDTO } from './dto/friendship-request.dto';
 
 @Controller('friendship')
 export class FriendshipRequestController {
@@ -9,25 +11,48 @@ export class FriendshipRequestController {
     private readonly usersService: UsersService,
 ) {}
 
-  @Post('send')
-  async sendRequest(@Body() body: { fromId: number; toId: number }) {
-    const fromUser = await this.usersService.findOne(body.fromId); 
-    const toUser = await this.usersService.findOne(body.toId); 
-    return await this.friendshipService.sendFriendshipRequest(fromUser, toUser);
+  @UseGuards(AuthGuard('jwt')) 
+  @Get('received-requests')
+  async getReceivedRequests(@Request() req): Promise<FriendshipRequestDTO[]> {
+    const userId = req.user.id; 
+    const requests = await this.friendshipService.getReceivedFriendRequests(userId);
+    return requests; 
   }
 
-  @Post('accept/:id')
-  async acceptRequest(@Param('id') id: number) {
-    return await this.friendshipService.acceptFriendshipRequest(id);
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('remove-friend/:friendId')
+  async removeFriend(@Request() req, @Param('friendId') friendId: string) {
+      const userId = req.user.id; 
+      await this.friendshipService.deleteFriend(userId, friendId);
+      return { message: 'Amigo removido com sucesso' };
+  }  
+
+  @Post('send-friend-request')
+  async sendFriendRequest(@Request() req, @Body() body: { toId: number }) {
+      if (!req.user) {
+          throw new UnauthorizedException('Usuário não autenticado');
+      }
+  
+      const fromId = req.user.id;
+      const toUser = await this.usersService.findOne(body.toId);
+      
+      if (!toUser) {
+          throw new NotFoundException('Usuário não encontrado');
+      }
+  
+      return await this.friendshipService.sendFriendshipRequest(fromId, toUser.id); 
+  }
+  
+
+  @Patch('accept/:id')
+  async acceptFriendRequest(@Param('id') requestId: number): Promise<{ message: string }> {
+    await this.friendshipService.acceptFriendshipRequest(requestId);
+    return { message: 'Friend request accepted.' };
   }
 
-  @Post('decline/:id')
-  async declineRequest(@Param('id') id: number) {
-    return await this.friendshipService.declineFriendshipRequest(id);
-  }
-
-  @Get('pending/:userId')
-  async getPendingRequests(@Param('userId') userId: number) {
-    return await this.friendshipService.getPendingRequests(userId);
+  @Patch('decline/:id')
+  async declineFriendRequest(@Param('id') requestId: number): Promise<{ message: string }> {
+    await this.friendshipService.declineFriendshipRequest(requestId);
+    return { message: 'Friend request declined.' };
   }
 }

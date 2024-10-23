@@ -1,0 +1,11 @@
+.container {
+    margin-top: 20px;
+}
+
+h1, h2, h3 {
+    color: #0097B2;
+}
+
+.list-group-item {
+    cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column} from 'typeorm';
 import { User } from '../users/user.entity'; 
 
 @Entity()
@@ -7,9 +7,11 @@ export class Friendship {
   id: number;
 
   @ManyToOne(() => User, user => user.friendships)
-  user: User; 
+  requester: User; // Remetente da amizade
 
   @ManyToOne(() => User, user => user.friendships)
-  friend: User; 
+  receiver: User; // Destinatário da amizade
 
+  @Column({ default: 'accepted' })
+  status: 'pending' | 'accepted' | 'declined';
 }
