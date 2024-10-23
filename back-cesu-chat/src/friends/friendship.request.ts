@@ -6,10 +6,10 @@ export class FriendshipRequest {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.sentRequests)
+  @ManyToOne(() => User, user => user.sentRequests, { nullable: false })
   from: User; 
 
-  @ManyToOne(() => User, user => user.receivedRequests)
+  @ManyToOne(() => User, user => user.receivedRequests, { nullable: false })
   to: User; 
 
   @Column({ default: 'pending' })
