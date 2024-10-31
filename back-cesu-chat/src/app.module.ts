@@ -11,6 +11,9 @@ import { Friendship } from './friends/friendship.entity';
 import { FriendshipRequest } from './friends/friendship.request';
 import { FriendshipModule } from './friends/friendship.module';
 import { Message } from './chat/message.entity';
+import { GroupModule } from './group/group.module';
+import { Group } from './group/group.entity';
+import { GroupMessage } from './group/group-message.entity';
 
 @Module({
   imports: [
@@ -28,12 +31,13 @@ import { Message } from './chat/message.entity';
       username: 'chatcesu',
       password: 'chatcesu123',
       database: 'chatcesu',
-      entities: [User, Friendship, FriendshipRequest, Message], 
+      entities: [User, Friendship, FriendshipRequest, Message, Group, GroupMessage], 
       synchronize: true, 
     }),
     AuthModule,
     UsersModule,
     ChatModule,
+    GroupModule,
     FriendshipModule,
   ],
 })
