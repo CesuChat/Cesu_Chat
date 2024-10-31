@@ -29,7 +29,7 @@ export class FriendshipService {
   }
 
   async getUserIdByUsername(username: string): Promise<number | null> {
-    const user = await this.usersService.findOneByUsername(username); 
+    const user = await this.usersService.findByUsername(username); 
     return user ? user.id : null; 
 }
 

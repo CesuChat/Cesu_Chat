@@ -14,10 +14,9 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { username }, select: ['id', 'username', 'password', 'isActive'] });
   }
 
-  async findOneByUsername(username: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { username } });
-  }
-
+  //async findOneByUsername(username: string): Promise<User | null> {
+    //return await this.usersRepository.findOne({ where: { username } });
+  //}
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({ select: ['id', 'username'] });

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (response.ok) {
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('username', username);
+          localStorage.setItem('userId', data.userId);
           alert('Login realizado com sucesso!');
           window.location.href = '/home.html'; 
         } else {

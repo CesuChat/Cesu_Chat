@@ -15,45 +15,29 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        const responseText = await response.text();
-        console.log('Resposta do servidor:', responseText);
-
         if (!response.ok) {
             alert('Erro ao carregar amigos');
             return;
         }
 
-        let data;
-        try {
-            data = JSON.parse(responseText);
-        } catch (error) {
-            console.error('Erro ao analisar a resposta como JSON:', error);
-            alert('Erro inesperado ao processar a resposta do servidor.');
-            return;
-        }
+        const data = await response.json();
+        friendList.innerHTML = '';
+        data.forEach(friend => {
+            const li = document.createElement('li');
+            li.textContent = friend.username;
 
-        if (data.message) {
-            friendList.innerHTML = `<li class="list-group-item">${data.message}</li>`;
-        } else {
-            friendList.innerHTML = '';
-            data.forEach(friend => {
-                const li = document.createElement('li');
-                li.textContent = friend.username;
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.classList.add('btn', 'btn-danger', 'ml-2');
+            removeButton.addEventListener('click', () => removeFriend(friend.id));
 
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Remover';
-                removeButton.classList.add('btn', 'btn-danger', 'ml-2');
-                removeButton.addEventListener('click', () => removeFriend(friend.id));
-
-                li.appendChild(removeButton);
-                li.addEventListener('click', () => startChat(friend.username)); 
-                friendList.appendChild(li);
-            });
-        }
+            li.appendChild(removeButton);
+            li.addEventListener('click', () => startChat(friend.username, friend.id)); 
+            friendList.appendChild(li);
+        });
     }
 
     async function removeFriend(friendId) {
-        console.log("Tentando remover amigo com ID:", friendId);
         if (confirm("Tem certeza que deseja remover este amigo?")) {
             const response = await fetch(`http://localhost:3000/friendship/remove-friend/${friendId}`, {
                 method: 'DELETE',
@@ -66,39 +50,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Amigo removido com sucesso.');
                 await loadFriends();
             } else {
-                const errorData = await response.json();
-                alert(`Erro ao remover o amigo: ${errorData.message || 'Erro desconhecido.'}`);
-                await loadFriends();
+                alert('Erro ao remover o amigo');
             }
         }
     }
 
     function startChat(friendUsername, friendId) {
         localStorage.setItem('currentFriendUsername', friendUsername); 
-        localStorage.setItem('currentFriendId', friendId); 
-        window.location.href = `chat.html`; 
+        localStorage.setItem('currentFriendId', friendId);
+
+        document.getElementById('chat-container').style.display = 'block';
+        document.getElementById('friend-username').textContent = friendUsername;
     }
 
     sendFriendRequestButton.addEventListener('click', sendFriendRequest);
-
     loadFriends();
 
     async function sendFriendRequest() {
         const username = friendUsernameInput.value.trim();
-
         if (!username) {
             alert("Por favor, insira um nome de usuário.");
             return;
         }
 
         const response = await fetch(`http://localhost:3000/users/find-by-username/${username}`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}` 
-            }
+            headers: { 'Authorization': `Bearer ${accessToken}` }
         });
 
         if (!response.ok) {
-            console.error("Usuário não encontrado");
             alert("Usuário não encontrado.");
             return;
         }
@@ -109,18 +88,15 @@ document.addEventListener('DOMContentLoaded', function () {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}` 
+                'Authorization': `Bearer ${accessToken}`
             },
             body: JSON.stringify({ toId })
         });
 
         if (requestResponse.ok) {
-            const result = await requestResponse.json();
-            console.log(result.message);
-            alert(result.message);
+            alert("Solicitação de amizade enviada com sucesso.");
             loadReceivedRequests();
         } else {
-            console.error("Erro ao enviar a solicitação de amizade");
             alert("Erro ao enviar a solicitação de amizade");
         }
     }
@@ -132,38 +108,33 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        const contentType = response.headers.get("content-type");
         if (!response.ok) {
             alert('Erro ao carregar solicitações de amizade');
             return;
         }
 
-        if (contentType && contentType.includes("application/json")) {
-            const requests = await response.json();
-            const requestsList = document.getElementById('requestsList');
-            requestsList.innerHTML = '';
+        const requests = await response.json();
+        const requestsList = document.getElementById('requestsList');
+        requestsList.innerHTML = '';
 
-            requests.forEach(request => {
-                const li = document.createElement('li');
-                li.textContent = `${request.fromUsername} wants to be your friend`;
+        requests.forEach(request => {
+            const li = document.createElement('li');
+            li.textContent = `${request.fromUsername} quer ser seu amigo`;
 
-                const acceptButton = document.createElement('button');
-                acceptButton.textContent = 'Aceitar';
-                acceptButton.classList.add('btn', 'btn-success', 'ms-2');
-                acceptButton.addEventListener('click', () => acceptFriendRequest(request.id));
+            const acceptButton = document.createElement('button');
+            acceptButton.textContent = 'Aceitar';
+            acceptButton.classList.add('btn', 'btn-success', 'ms-2');
+            acceptButton.addEventListener('click', () => acceptFriendRequest(request.id));
 
-                const declineButton = document.createElement('button');
-                declineButton.textContent = 'Recusar';
-                declineButton.classList.add('btn', 'btn-danger', 'ms-2');
-                declineButton.addEventListener('click', () => declineFriendRequest(request.id));
+            const declineButton = document.createElement('button');
+            declineButton.textContent = 'Recusar';
+            declineButton.classList.add('btn', 'btn-danger', 'ms-2');
+            declineButton.addEventListener('click', () => declineFriendRequest(request.id));
 
-                li.appendChild(acceptButton);
-                li.appendChild(declineButton);
-                requestsList.appendChild(li);
-            });
-        } else {
-            console.error('Recebido um conteúdo não JSON:', await response.text());
-        }
+            li.appendChild(acceptButton);
+            li.appendChild(declineButton);
+            requestsList.appendChild(li);
+        });
     }
 
     async function acceptFriendRequest(requestId) {
@@ -198,8 +169,96 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }    
 
-    sendFriendRequestButton.addEventListener('click', sendFriendRequest);
-
-    loadFriends();
     loadReceivedRequests();
+
+    //chat configure
+    const socket = io('http://localhost:3000', {
+        auth: {
+            token: localStorage.getItem('accessToken')
+        }
+    });
+
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const messagesDiv = document.getElementById('messages');
+    const friendUsername = document.getElementById('friend-username');
+
+    const currentFriendUsername = localStorage.getItem('currentFriendUsername');
+    const currentFriendId = parseInt(localStorage.getItem('currentFriendId')); 
+    const userId = parseInt(localStorage.getItem('userId'));
+    const username = localStorage.getItem('username');
+
+    if (friendUsername && currentFriendUsername) {
+        friendUsername.textContent = currentFriendUsername;
+    }
+
+    function addMessageToScreen(message) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+    
+        const usernameElement = document.createElement('div');
+        usernameElement.classList.add('message-username');
+        usernameElement.textContent = message.sender.username; 
+    
+        messageElement.appendChild(usernameElement);
+        
+        const contentElement = document.createElement('div');
+        contentElement.textContent = message.content; 
+        messageElement.appendChild(contentElement);
+        
+        if (message.sender.id === userId) {
+            messageElement.classList.add('sent'); 
+        } else {
+            messageElement.classList.add('received'); 
+        }
+    
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+
+    async function loadMessages(friendId) {
+        try {
+            const response = await fetch(`http://localhost:3000/chat/messages/${friendId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
+
+            if (response.ok) {
+                const messages = await response.json();
+                messages.forEach(message => addMessageToScreen(message));
+            } else {
+                console.error('Erro ao carregar mensagens:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Erro de conexão:', error);
+        }
+    }
+
+    socket.on('connect', () => {
+        console.log('Conectado ao servidor WebSocket');
+        socket.emit('joinChat', currentFriendId);
+        loadMessages(currentFriendId); 
+    });
+
+    sendButton.addEventListener('click', () => {
+        const content = messageInput.value;
+
+        if (content) {
+            socket.emit('sendMessage', {
+                content,
+                receiverId: currentFriendId,
+                sender: { id: userId, username: username}
+            });
+            messageInput.value = '';
+        }
+    });
+
+    socket.on('message', (message) => {
+        addMessageToScreen(message);
+    });
+    loadMessages(currentFriendId); 
 });
+
