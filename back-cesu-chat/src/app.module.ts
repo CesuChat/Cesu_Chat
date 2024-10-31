@@ -10,6 +10,7 @@ import { join } from 'path';
 import { Friendship } from './friends/friendship.entity';
 import { FriendshipRequest } from './friends/friendship.request';
 import { FriendshipModule } from './friends/friendship.module';
+import { Message } from './chat/message.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { FriendshipModule } from './friends/friendship.module';
       username: 'chatcesu',
       password: 'chatcesu123',
       database: 'chatcesu',
-      entities: [User, Friendship, FriendshipRequest], 
+      entities: [User, Friendship, FriendshipRequest, Message], 
       synchronize: true, 
     }),
     AuthModule,

@@ -27,6 +27,7 @@ export class FriendshipRequestController {
       return { message: 'Amigo removido com sucesso' };
   }  
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('send-friend-request')
   async sendFriendRequest(@Request() req, @Body() body: { toId: number }) {
       if (!req.user) {
@@ -43,13 +44,14 @@ export class FriendshipRequestController {
       return await this.friendshipService.sendFriendshipRequest(fromId, toUser.id); 
   }
   
-
+  @UseGuards(AuthGuard('jwt'))
   @Patch('accept/:id')
   async acceptFriendRequest(@Param('id') requestId: number): Promise<{ message: string }> {
     await this.friendshipService.acceptFriendshipRequest(requestId);
     return { message: 'Friend request accepted.' };
   }
-
+  
+  @UseGuards(AuthGuard('jwt'))
   @Patch('decline/:id')
   async declineFriendRequest(@Param('id') requestId: number): Promise<{ message: string }> {
     await this.friendshipService.declineFriendshipRequest(requestId);

@@ -88,7 +88,7 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload);
   
-    return { accessToken: token };
+    return { accessToken: token, userId: user.id, };
   }
 
   async requestPasswordReset(email: string) {

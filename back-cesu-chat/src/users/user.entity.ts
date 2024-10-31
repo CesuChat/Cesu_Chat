@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Friendship } from '../friends/friendship.entity';
 import { FriendshipRequest } from '../friends/friendship.request';
+import { Message } from 'src/chat/message.entity';
 
 @Entity('user')
 export class User {
@@ -39,4 +40,7 @@ export class User {
 
   @OneToMany(() => FriendshipRequest, request => request.to)
   receivedRequests: FriendshipRequest[];
+
+  @OneToMany(() => Message, message => message.sender)
+  sentMessages: Message[];
 }
