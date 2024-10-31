@@ -33,6 +33,10 @@ export class UsersService {
     }
     return user;
   }
+
+  async findById(id: number): Promise<User | undefined> {
+    return await this.usersRepository.findOne({ where: { id } });
+  }
   
   async findByVerificationToken(token: string): Promise<User | undefined> {
     return this.usersRepository.findOne({ where: { verificationToken: token } });
