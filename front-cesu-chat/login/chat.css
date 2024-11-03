@@ -38,3 +38,10 @@ body {
     align-items: center;
     color: #000;
 }
+
+.image img {
+    width: 600px;
+    height: 600px;
+    justify-content: center;
+    align-items: center;
+}
