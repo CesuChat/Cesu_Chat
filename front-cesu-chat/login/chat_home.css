@@ -45,3 +45,12 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.bi-justify {
+    color: #0097B2;
+}
+
+.small-image {
+    width: 45px; 
+    height: 45px; 
+}
