@@ -33,3 +33,8 @@ body {
     font-size: 16px;
     color: #FFF;
 }
+
+.message span {
+    align-items: center;
+    color: #000;
+}
