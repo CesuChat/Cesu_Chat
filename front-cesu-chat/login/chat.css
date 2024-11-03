@@ -4,31 +4,32 @@ body {
     background-color: #f8f9fa;
 }
 
-.container-sm {
+.container-sm1 {
     max-width: 500px;
     margin: 0 auto;
     padding: 0 15px;
     background-color: #A4A4A4;
     border-radius: 8px;
 }
-.container-sm h1 {
+
+.pesquisar {
+    border-radius: 6px;
+    border: 1px solid #0097B2;
+}
+
+.container-sm1 h1 {
     font-size: 18px;
     margin-bottom: 2rem;
     color: #FFF;
 }
 
-.container-sm i {
+.container-sm1 i {
     width: 22px;
     height: 22px;
     margin-bottom: 2px;
 }
 
-.container-sm span {
+.container-sm1 span {
     font-size: 16px;
     color: #FFF;
-}
-
-.pesquisar {
-    border-radius: 6px;
-    border: 1px solid #0097B2;
 }
