@@ -1,0 +1,34 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container-sm {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 15px;
+    background-color: #A4A4A4;
+    border-radius: 8px;
+}
+.container-sm h1 {
+    font-size: 18px;
+    margin-bottom: 2rem;
+    color: #FFF;
+}
+
+.container-sm i {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+}
+
+.container-sm span {
+    font-size: 16px;
+    color: #FFF;
+}
+
+.pesquisar {
+    border-radius: 6px;
+    border: 1px solid #0097B2;
+}
