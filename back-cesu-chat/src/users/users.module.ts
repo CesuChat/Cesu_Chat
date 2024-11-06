@@ -9,6 +9,6 @@ import { FriendshipModule } from '../friends/friendship.module';
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => FriendshipModule)], 
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService], 
+  exports: [UsersService, TypeOrmModule], 
 })
 export class UsersModule {}

@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Group } from '../group/group.entity'; 
 
 @Entity()
 export class Message {
@@ -14,6 +15,9 @@ export class Message {
 
     @ManyToOne(() => User, (user) => user.sentMessages)
     receiver: User;
+
+    @ManyToOne(() => Group, group => group.messages, { nullable: true }) 
+    group: Group;
 
     @Column()
     createdAt: Date;

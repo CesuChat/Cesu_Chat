@@ -3,7 +3,6 @@ import { Friendship } from '../friends/friendship.entity';
 import { FriendshipRequest } from '../friends/friendship.request';
 import { Message } from 'src/chat/message.entity';
 import { Group } from 'src/group/group.entity';
-import { group } from 'console';
 
 @Entity('user')
 export class User {
@@ -21,6 +20,9 @@ export class User {
 
   @Column()
   curse: string;
+
+  @Column({ nullable: true })
+  photo: string;
 
   @Column({ default: false })
   isActive: boolean;
