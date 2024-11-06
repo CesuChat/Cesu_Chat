@@ -43,6 +43,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         const message = await this.chatService.createMessage(createMessageDto, senderId);
         this.server.emit('message', message);
+
+        this.server.to(message.toString()).emit('notification', { //ENVIO DE NOTIFICAÇÃO
+            title: 'Nova mensagem',
+            content: `Você recebeu uma nova mensagem de ${client.user.id}`,
+            timestamp: new Date(),
+        });
     }
 
     @SubscribeMessage('joinChat')
@@ -72,16 +78,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     
         const sender = await this.usersService.findById(senderId);
         if (!sender) return; 
-    
+
+        const groupMessage = await this.groupService.addMessageToGroup(groupId, sender, content);
         try {
-
-            const groupMessage = await this.groupService.addMessageToGroup(groupId, sender, content);
-
             this.server.to(`group_${groupId}`).emit('groupMessage', groupMessage);
         } catch (error) {
             console.error('Erro ao enviar mensagem para o grupo:', error);
             client.emit('error', 'Failed to send message');
         }
+
+        this.server.to(groupMessage.toString()).emit('notification', { //ENVIO DE NOTIFICAÇÃO
+            title: 'Nova mensagem',
+            content: `Você recebeu uma nova mensagem de ${client.user.id}`,
+            timestamp: new Date(),
+        });
     }    
 }
 
