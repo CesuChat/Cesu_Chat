@@ -56,6 +56,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (group && group.members.some(member => member.id === client.user.id)) {
             client.join(`group_${groupId}`);
             console.log(`User ${client.user.id} joined group ${groupId}`);
+    
+            const messages = await this.groupService.getMessagesByGroupId(groupId);
+            client.emit('groupMessages', messages);  
         } else {
             client.emit('error', 'Access denied to the group');
         }
@@ -66,12 +69,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const { groupId, content } = payload;
         const senderId = client.user?.id;
         if (!senderId) return;
-
+    
         const sender = await this.usersService.findById(senderId);
         if (!sender) return; 
+    
+        try {
 
-        const groupMessage = await this.groupService.addMessageToGroup(groupId, sender, content);
-        this.server.to(`group_${groupId}`).emit('groupMessage', groupMessage);
-    }
+            const groupMessage = await this.groupService.addMessageToGroup(groupId, sender, content);
+
+            this.server.to(`group_${groupId}`).emit('groupMessage', groupMessage);
+        } catch (error) {
+            console.error('Erro ao enviar mensagem para o grupo:', error);
+            client.emit('error', 'Failed to send message');
+        }
+    }    
 }
 
