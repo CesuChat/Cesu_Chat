@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             imgContainer.classList.add('friend-image', 'me-3');
             
             const img = document.createElement('img');
-            img.src = conversation.friendPhoto || './src/default-avatar.png'; 
+            img.src = conversation.isGroup ? './src/default-group-avatar.png' : (conversation.friendPhoto || './src/default-avatar.png'); 
             img.alt = conversation.friendUsername; 
             img.classList.add('rounded-circle', 'conversation-image'); 
             
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('friend-username').textContent = groupName;
     
         const groupPhotoElement = document.getElementById('friend-photo');
-        groupPhotoElement.src = './src/default-avatar.png'; 
+        groupPhotoElement.src = './src/default-group-avatar.png'; 
     
         messagesDiv.innerHTML = ''; 
         loadGroupMessages(groupId); 
