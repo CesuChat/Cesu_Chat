@@ -1,187 +1,7 @@
-.container {
-    margin-top: 40px;
-    max-width: 2000px; 
-    margin: 0 auto;
-    background-color: white; 
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-}
-
-.bem-vindo {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    gap: 5px;
-}
-
-.search-container {
-    width: 70%; 
-    margin-bottom: 20px; 
-    display: flex;
-    align-items: center;
-}
-
-#recentConversationsContainer {
-    max-width: 500px; 
-    margin-top: 20px; 
-    justify-content: left;
-}
-
-#addFriendButton, #create-group-btn {
-    font-size: 24px;
-    color: #0097B2; 
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-#addFriendButton:hover, #create-group-btn:hover {
-    color: #0056b3; 
-}
-
-.list-group-item {
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    margin-bottom: 5px;
-}
-
-.list-group-item:hover {
-    background-color: #eaeaea;
-}
-
-#searchFriends {
-    border-radius: 20px;
-    padding: 10px;
-    border: 1px solid #0097B2;
-}
-
-#friendSearchList {
-    width: 100%; 
-    max-height: 150px;
-    overflow-y: auto;
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-top: 5px;
-    z-index: 100;
-}
-
-#chat-container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f1f1f1;
-    border: 1px solid #ccc;
-}
-
-.message {
-    padding: 10px 15px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-.sent {
-    align-self: flex-end;
-    background-color: #dcf8c6;
-    text-align: right;
-}
-
-.received {
-    align-self: flex-start;
-    background-color: #eaeaea;
-}
-
-h1, h2, h3 {
-    color: #0097B2;
-}
-
-.list-group-item {
-    cursor: pointer;
-}
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5; 
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.chat-container {
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    padding: 10px;
-    overflow-y: auto; 
-    max-height: 400px;
-    border: 1px solid #ccc; 
-    border-radius: 5px; 
-    background-color: white; 
-}
-
-#send-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff; 
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s; 
-}
-
-
-#send-button:hover {
-    background-color: #0056b3; 
-}
-
-#message-input {
-    padding: 10px;
-    border: 1px solid #ccc; 
-    border-radius: 5px;
-    width: calc(100% - 20px); 
-    margin-bottom: 10px; 
-}
-
-#friend-username {
-    font-size: 20px; 
-    margin-bottom: 10px; 
-    text-align: center; 
-}
-
-.message {
-    max-width: 70%;
-    margin: 5px;
-    padding: 10px;
-    border-radius: 10px;
-    display: inline-block;
-}
-
-.sent {
-    background-color: #dcf8c6; 
-    align-self: flex-end; 
-    text-align: right;
-}
-
-.received {
-    background-color: #f1f1f1; 
-    align-self: flex-start; 
-}
-
-.message-username {
-    font-weight: bold;
-    margin-bottom: 3px; 
-    font-size: 14px; 
-    color: #333;
+    background-color: #f8f9fa;
 }
 
 .container-sm1 {
@@ -219,165 +39,38 @@ body {
     color: #000;
 }
 
-.image img {
-    width: 600px;
-    height: 600px;
-    justify-content: center;
-    align-items: center;
-}
-
-.bi-justify {
-    color: #0097B2;
-}
-
-.small-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-#friendSearchList {
-    position: absolute; 
-    z-index: 1000; 
-    width: 600px; 
-    max-height: 200px; 
-    overflow-y: auto; 
-    display: none; 
-    background-color: white; 
-    border: 1px solid #ccc; 
-    border-radius: 5px; 
-    top: 120px;
-}
-
-.list-group-item {
-    cursor: pointer; 
-}
-
-.list-group-item:hover {
-    background-color: #f0f0f0; 
-}
-
-.menu-button {
-    margin-left: auto; 
-    background: none; 
-    border: none; 
-    color: black; 
-    cursor: pointer;
-}
-
-.options-menu {
-    background-color: white; 
-    border: 1px solid #ccc;
-    border-radius: 5px; 
-    padding: 10px; 
-    z-index: 1001;
-}
-
-.option-btn {
-    background: none;
-    border: none; 
-    color: black; 
-    cursor: pointer;
-    text-align: left;
-    padding: 5px 0; 
-    width: 100%; 
-}
-
-.option-btn:hover {
-    background-color: #f0f0f0; 
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+.chat-box {
+    max-height: 500px;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-}
-
-.list-group-item {
-    display: flex;
-    align-items: center;
-}
-
-.list-group-item input {
-    margin-right: 10px;
-}
-
-#friendSearch {
-    flex-grow: 1; 
-}
-
-.conversation-item {
-    display: flex;
-    align-items: center;
+    overflow-y: scroll;
+    background-color: #f8f9fa;
     padding: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
 }
 
-.conversation-item:hover {
-    background-color: #f0f8ff;
+.message-received {
+    background-color: #004D5A; 
+    color: #FFFFFF;
+    padding: 10px 15px; 
+    border-radius: 16px; 
+    margin-bottom: 10px; 
+    max-width: 70%;
 }
 
-.friend-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.message-sent {
+    background-color: #307e8b; 
+    color: #FFFFFF;
+    padding: 10px 15px; 
+    border-radius: 20px; 
+    margin-bottom: 10px; 
+    max-width: 70%; 
+    margin-left: auto; 
+    text-align: right;
 }
 
-.conversation-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-}
-
-.text-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.text-container h5 {
-    margin: 0;
-    font-size: 1rem;
-    color: #333;
-}
-
-.last-message {
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.conversation-item small {
-    font-size: 0.8rem;
-    color: #999;
-    margin-left: auto;
-}
-
-#chat-container,
-#placeholder-container {
-    height: 100%; 
-    justify-content: right;
-}
-
-#messages {
-    max-height: 500px; 
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+#searchFriends {
+    border-radius: 20px;
     padding: 10px;
-    background-color: #f5f5f5;
+    border: 1px solid #0097B2;
 }
