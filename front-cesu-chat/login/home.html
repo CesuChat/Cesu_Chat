@@ -12,14 +12,52 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 sidebar border-end">
-                <h1 id="welcome-message" class="text-center">Bem-vindo ao Chat</h1>
-                <button id="create-group-btn" class="btn btn-link ms-2">
-                    <i class="bi bi-people-fill"></i>
-                </button>
+                <div class="d-flex align-items-center justify-content-center">
+                    <button id="create-group-btn" class="btn btn-link me-2" data-bs-toggle="modal" data-bs-target="#profileModal">
+                        <i class="bi bi-people-fill" style="color: #307e8b; font-size: 25px;"></i>
+                    </button>
+                    
+                    <!-- Modal de Perfil -->
+                    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="profileModalLabel">Editar Perfil</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Foto de perfil -->
+                                    <div class="mb-3 text-center">
+                                        <img id="profile-img" src="https://via.placeholder.com/150" alt="Foto de Perfil" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                        <div class="mt-2">
+                                            <input type="file" class="form-control" id="upload-image" accept="image/*">
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Formulário para editar nome e curso -->
+                                    <div class="mb-3">
+                                        <label for="profile-name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="profile-name" placeholder="Nome Exemplo">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="profile-course" class="form-label">Curso</label>
+                                        <input type="text" class="form-control" id="profile-course" placeholder="Curso Exemplo">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" id="save-profile-btn" style="background-color: #307e8b;">Salvar alterações</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h1 id="welcome-message" class="text-center mb-0">Bem-vindo ao Chat</h1>
+                </div>
                 <div class="container-sm p-2 d-flex align-items-center mb-3">
                     <input type="text" id="searchFriends" class="form-control pesquisar" placeholder="Pesquisar">
                     <button type="button" class="btn btn-link mt-3" data-bs-toggle="modal" data-bs-target="#addFriendModal">
-                        <i class="bi bi-person-plus-fill"></i>
+                        <i class="bi bi-person-plus-fill" style="color: #307e8b; font-size: 25px;"></i>
                     </button>
                     <div id="addFriendModal" class="modal fade" tabindex="-1" aria-labelledby="addFriendModalLabel" aria-hidden="true">
                         <div class="modal-dialog" style="max-width: 700px; width: 100%;">
@@ -30,18 +68,31 @@
                                 </div>
                                 <div class="modal-body" style="display: flex; gap: 20px;">
                                     <!-- Seção para enviar solicitação -->
-                                    <div style="flex: 1;">
-                                        <h6 style="margin-bottom: 15px;">Enviar Solicitação</h6>
-                                        <input type="text" id="friendUsernameInput" class="form-control" placeholder="Nome de usuário do amigo" required style="margin-bottom: 10px;">
-                                        <div class="mt-2" id="addFriendMessage"></div>
-                                        <button type="button" class="btn btn-primary mt-2" id="sendFriendRequestButton">Enviar Solicitação</button>
+                                    <div style="flex: 1; background-color: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <h6 style="margin-bottom: 15px; font-size: 18px; font-weight: bold; color: #333;">Enviar Solicitação</h6>
+                                        <input type="text" id="friendUsernameInput" class="form-control" placeholder="Nome de usuário do amigo" required style="margin-bottom: 15px; padding: 12px; border-radius: 5px; border: 1px solid #ddd; font-size: 14px; transition: border-color 0.3s;">
+                                        <div class="mt-2" id="addFriendMessage" style="color: #ff0000; font-size: 14px;"></div>
+                                        <button type="button" class="btn btn-primary mt-2" id="sendFriendRequestButton" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 5px; background-color: #307e8b; border: none; cursor: pointer; transition: background-color 0.3s;">
+                                            Enviar Solicitação
+                                        </button>
                                     </div>
+                                    
                     
                                     <!-- Seção para visualizar solicitações recebidas -->
-                                    <div style="flex: 1;">
-                                        <h6 style="margin-bottom: 15px;">Solicitações Recebidas</h6>
-                                        <ul id="requestsList" class="list-group" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"></ul>
+                                    <div style="flex: 1; background-color: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <h6 style="margin-bottom: 15px; font-size: 18px; font-weight: bold; color: #333;">Solicitações Recebidas</h6>
+                                        <ul id="requestsList" class="list-group" style="max-height: 200px; overflow-y: auto; padding: 10px; border-radius: 5px; background-color: #fff; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                            <!-- Exemplos de itens da lista -->
+                                            <li class="list-group-item" style="border: none; padding: 10px; margin-bottom: 10px; background-color: #f7f7f7; border-radius: 5px;">
+                                                Solicitação 1
+                                            </li>
+                                            <li class="list-group-item" style="border: none; padding: 10px; margin-bottom: 10px; background-color: #f7f7f7; border-radius: 5px;">
+                                                Solicitação 2
+                                            </li>
+                                            <!-- Mais itens aqui -->
+                                        </ul>
                                     </div>
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
