@@ -1,338 +1,60 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const friendSearchList = document.getElementById('friendSearchList');
-    const searchInput = document.getElementById('searchFriends');
-    const accessToken = localStorage.getItem('accessToken');
-    const username = localStorage.getItem('username'); 
-    const welcomeMessage = document.getElementById('welcome-message');
-    
-    let friendsData = [];
+document.addEventListener("DOMContentLoaded", function() {
+    const messageInput = document.getElementById("messageInput");
+    const chatBox = document.getElementById("chatBox");
+    const sendMessageButton = document.querySelector(".btn-success");
+    const searchFriends = document.getElementById("searchFriends");
+    const friendList = document.querySelectorAll(".container-sm1");
 
-    friendSearchList.style.display = 'none';
-
-    if (username) {
-        welcomeMessage.textContent = `Bem-vindo, ${username}`;
-        const welcomeImage = document.querySelector('.small-image');
-        welcomeImage.src = './src/default-avatar.png'; 
-    } else {
-        welcomeMessage.textContent = 'Bem-vindo ao Chat';
-    }
-
-    if (!accessToken) {
-        window.location.href = 'login.html';
-    }
-
-    async function loadFriends() {
-        try {
-            const response = await fetch('http://localhost:3000/users/friends', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (response.ok) {
-                friendsData = await response.json();
-                console.log(friendsData);
-                displayFriends(friendsData); 
-            } else {
-                alert('Erro ao carregar amigos');
-            }
-        } catch (error) {
-            console.error('Erro ao carregar amigos:', error);
-        }
-    }
-
-    function displayFriends(friends) {
-            console.log('Amigos a serem exibidos:', friends); 
-        friendSearchList.innerHTML = ''; 
-        
-        const displayedFriends = friends.slice(0, 8);
-
-        displayedFriends.forEach(friend => {
-            const li = document.createElement('li');
-            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-
-            const friendName = document.createElement('span');
-            friendName.textContent = friend.username;
-            li.appendChild(friendName);
-
-            const menuButton = document.createElement('button');
-            menuButton.innerHTML = '<i class="bi bi-three-dots-vertical"></i>'; 
-            menuButton.classList.add('menu-button', 'btn', 'btn-link');
-            li.appendChild(menuButton);
-
-            const optionsMenu = document.createElement('div');
-            optionsMenu.classList.add('options-menu', 'd-none'); 
-            optionsMenu.innerHTML = `
-                <button class="option-btn" id="removeFriendBtn-${friend.id}">Remover Amigo</button>
-                <button class="option-btn" id="viewProfileBtn-${friend.id}">Exibir Perfil</button>
+    // Função para enviar mensagem
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (messageText !== "") {
+            const messageSent = document.createElement("div");
+            messageSent.classList.add("message-sent");
+            messageSent.innerHTML = `
+                ${messageText}
+                <div class="message-time" style="font-size: 0.8rem; color: #999; margin-top: 5px;">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
             `;
-            li.appendChild(optionsMenu);
-
-            menuButton.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                const isVisible = optionsMenu.classList.toggle('d-none');
-                if (isVisible) {
-                    optionsMenu.style.display = 'none'; 
-                } else {
-                    optionsMenu.style.display = 'block';
-                }
-                const rect = menuButton.getBoundingClientRect();
-                optionsMenu.style.left = `${rect.left}px`;
-                optionsMenu.style.top = `${rect.bottom}px`; 
-            });
-
-            const removeFriendBtn = optionsMenu.querySelector(`#removeFriendBtn-${friend.id}`);
-            removeFriendBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                removeFriend(friend.id); 
-            });
-
-            li.addEventListener('click', () => startChat(friend.username, friend.id));
-            friendSearchList.appendChild(li);
-        });
-
-        friendSearchList.style.display = displayedFriends.length > 0 ? 'block' : 'none';
+            chatBox.appendChild(messageSent);
+            chatBox.scrollTop = chatBox.scrollHeight; // Desce o chat automaticamente
+            messageInput.value = ""; // Limpa o campo de input
+        }
     }
 
-    searchInput.addEventListener('focus', () => {
-        if (friendsData.length === 0) {
-            loadFriends();
-        }
-        friendSearchList.style.display = 'block'; 
-    });
+    // Enviar mensagem ao clicar no botão "Enviar"
+    sendMessageButton.addEventListener("click", sendMessage);
 
-    searchInput.addEventListener('input', function () {
-        const searchTerm = searchInput.value.toLowerCase();
-
-        if (searchTerm) {
-            const filteredFriends = friendsData.filter(friend =>
-                friend.username.toLowerCase().includes(searchTerm)
-            );
-            displayFriends(filteredFriends); 
-        } else {
-            displayFriends(friendsData);
+    // Enviar mensagem ao pressionar Enter
+    messageInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
         }
     });
 
-    document.addEventListener('click', function(event) {
-        if (!friendSearchList.contains(event.target) && event.target !== searchInput) {
-            friendSearchList.style.display = 'none'; 
-        }
-    });
-
-    async function removeFriend(friendId) {
-        if (confirm("Tem certeza que deseja remover este amigo?")) {
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(`http://localhost:3000/friendship/remove-friend/${friendId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (response.ok) {
-                alert('Amigo removido com sucesso.');
-                await loadFriends();
+    // Função para pesquisar amigos na lista
+    searchFriends.addEventListener("input", function() {
+        const searchText = searchFriends.value.toLowerCase();
+        friendList.forEach(function(friend) {
+            const friendName = friend.querySelector("h1.h5").textContent.toLowerCase();
+            if (friendName.includes(searchText)) {
+                friend.style.display = "flex"; // Exibe o amigo correspondente
             } else {
-                alert('Erro ao remover o amigo');
+                friend.style.display = "none"; // Oculta o amigo que não corresponde
             }
-        }
-    }
-    
-    const recentConversationsList = document.getElementById('recentConversationsList');
-
-    async function loadRecentConversations() {
-        try {
-            const response = await fetch('http://localhost:3000/chat/recent-conversations', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-    
-            if (response.ok) {
-                const conversations = await response.json();
-                displayRecentConversations(conversations);
-            } else {
-                alert('Erro ao carregar conversas recentes');
-            }
-        } catch (error) {
-            console.error('Erro ao carregar conversas recentes:', error);
-        }
-    }
-    
-    function displayRecentConversations(conversations) {
-        recentConversationsList.innerHTML = ''; 
-    
-        conversations.forEach(conversation => {
-            console.log(conversation);
-            
-            const container = document.createElement('div');
-            container.classList.add('conversation-item', 'd-flex', 'align-items-center', 'border-bottom', 'py-3');
-            
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('friend-image', 'me-3');
-            
-            const img = document.createElement('img');
-            img.src = conversation.friendPhoto || './src/default-avatar.png'; 
-            img.alt = conversation.friendUsername; 
-            img.classList.add('rounded-circle', 'conversation-image'); 
-            
-            const textContainer = document.createElement('div');
-            textContainer.classList.add('text-container', 'flex-grow-1');
-            
-            const friendName = document.createElement('h5');
-            friendName.classList.add('mb-1', 'fw-bold');
-            friendName.textContent = conversation.isGroup ? conversation.friendUsername : conversation.friendUsername; 
-            
-            const messageInfo = document.createElement('div');
-            messageInfo.classList.add('d-flex', 'align-items-center', 'text-muted');
-            messageInfo.innerHTML = `
-                <i class="bi bi-check2-circle me-1"></i>
-                <span class="last-message">${conversation.lastMessage}</span>
-            `;
-            
-            const timestamp = document.createElement('small');
-            timestamp.classList.add('text-end', 'text-muted', 'ms-auto');
-            timestamp.textContent = formatTime(new Date(conversation.timestamp)); 
-            
-            container.addEventListener('click', () => {
-                if (conversation.isGroup) {
-                    startGroupChat(conversation.friendUsername, conversation.id); 
-                } else {
-                    startChat(conversation.friendUsername, conversation.withUserId, conversation.friendPhoto);
-                }
-            });
-            
-            imgContainer.appendChild(img);
-            textContainer.appendChild(friendName);
-            textContainer.appendChild(messageInfo);
-            container.appendChild(imgContainer);
-            container.appendChild(textContainer);
-            container.appendChild(timestamp);
-            recentConversationsList.appendChild(container);
         });
-    }
-    
-    
-    function formatTime(date) {
-        const hours = date.getHours().toString().padStart(2, '0'); 
-        const minutes = date.getMinutes().toString().padStart(2, '0'); 
-        return `${hours}:${minutes}`;
-    }
-    
-    function startChat(friendUsername, friendId) {
-        localStorage.setItem('currentFriendUsername', friendUsername); 
-        localStorage.setItem('currentFriendId', friendId);
-    
-        document.getElementById('placeholder-image').style.display = 'none'; 
-        document.getElementById('chat-container').style.display = 'block'; 
-        document.getElementById('friend-username').textContent = friendUsername;
-
-        const friendPhotoElement = document.getElementById('friend-photo');
-        friendPhotoElement.src = friendPhoto || './src/default-avatar.png';
-
-        messagesDiv.innerHTML = '';
-        loadMessages(friendId); 
-    }
-    loadRecentConversations();
-
-    async function loadGroupMessages(groupId) {
-        try {
-            const response = await fetch(`http://localhost:3000/groups/:groupId/message`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                },
-            });
-    
-            if (response.ok) {
-                const messages = await response.json();
-                document.getElementById('messages').innerHTML = '';
-                messages.forEach(message => addMessageToScreen(message));
-            } else {
-                console.error('Erro ao carregar mensagens do grupo:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Erro de conexão:', error);
-        }
-    }
-    
-
-    function startGroupChat(groupName, groupId) {
-        localStorage.setItem('currentGroupId', groupId); 
-        localStorage.setItem('currentGroupName', groupName);
-    
-        document.getElementById('placeholder-image').style.display = 'none'; 
-        document.getElementById('chat-container').style.display = 'block'; 
-        document.getElementById('friend-username').textContent = groupName;
-    
-        const groupPhotoElement = document.getElementById('friend-photo');
-        groupPhotoElement.src = './src/default-avatar.png'; 
-    
-        messagesDiv.innerHTML = ''; 
-        loadGroupMessages(groupId); 
-    }
-    
-
-    document.getElementById('create-group-btn').addEventListener('click', () => {
-        loadFriends();
-        openGroupCreationModal();
     });
-    
-    function openGroupCreationModal() {
-        const modalHtml = `
-            <div id="group-modal" class="modal">
-                <div class="modal-content">
-                    <h2>Criar Novo Grupo</h2>
-                    <input type="text" id="group-name" placeholder="Nome do Grupo" required>
-                    <h4>Selecionar Amigos:</h4>
-                    <input type="text" id="friend-search-input" placeholder="Buscar amigos..." oninput="filterFriends()">
-                    <ul id="friend-selection-list" class="list-group">
-                        ${friendsData.map(friend => `
-                            <li class="list-group-item">
-                                <input type="checkbox" id="friend-${friend.id}" value="${friend.id}">
-                                <label for="friend-${friend.id}">${friend.username}</label>
-                            </li>
-                        `).join('')}
-                    </ul>
-                    <button id="submit-group-btn">Criar Grupo</button>
-                    <button id="close-modal-btn">Fechar</button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-    
-        document.getElementById('submit-group-btn').addEventListener('click', createGroup);
-        document.getElementById('close-modal-btn').addEventListener('click', () => {
-            document.getElementById('group-modal').remove();
-        });
-    }
-    
-    function filterFriends() {
-        const searchTerm = document.getElementById('friend-search-input').value.toLowerCase();
-        const friendSelectionList = document.getElementById('friend-selection-list');
-    
-        if (!searchTerm) {
-            friendSelectionList.innerHTML = friendsData.map(friend => `
-                <li class="list-group-item">
-                    <input type="checkbox" id="friend-${friend.id}" value="${friend.id}">
-                    <label for="friend-${friend.id}">${friend.username}</label>
-                </li>
-            `).join('');
-            return;
-        }
-    
-        const filteredFriends = friendsData.filter(friend => 
-            friend.username.toLowerCase().includes(searchTerm)
-        );
-    
-        friendSelectionList.innerHTML = filteredFriends.map(friend => `
-            <li class="list-group-item">
-                <input type="checkbox" id="friend-${friend.id}" value="${friend.id}">
-                <label for="friend-${friend.id}">${friend.username}</label>
-            </li>
-        `).join('');
-    }    
+
+    // Simular criação de grupo (ação ao clicar no botão de grupo)
+    const createGroupBtn = document.getElementById("create-group-btn");
+    createGroupBtn.addEventListener("click", function() {
+    });
+
+    // Simular adição de amigo (ação ao clicar no botão de adicionar amigo)
+    const addFriendButton = document.getElementById("addFriendButton");
+    addFriendButton.addEventListener("click", function() {
+    });
+});
+
     
     async function createGroup() {
         const groupName = document.getElementById('group-name').value;
@@ -403,36 +125,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     
     function openAddFriendModal() {
-        const modalHtml = `
-            <div id="add-friend-modal" class="modal" tabindex="-1" aria-labelledby="addFriendModalLabel" aria-hidden="true" style="display: flex; justify-content: center; align-items: center;">
-                <div class="modal-dialog" style="max-width: 700px; width: 100%;">
-                    <div class="modal-content" style="padding: 20px; border-radius: 10px;">
-                        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <h5 class="modal-title" id="addFriendModalLabel">Gerenciar Amizades</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 20px;">&times;</button>
-                        </div>
-                        <div class="modal-body" style="display: flex; gap: 20px;">
-                            <!-- Seção para enviar solicitação -->
-                            <div style="flex: 1;">
-                                <h6 style="margin-bottom: 15px;">Enviar Solicitação</h6>
-                                <input type="text" id="friendUsernameInput" class="form-control" placeholder="Nome de usuário do amigo" required style="margin-bottom: 10px;">
-                                <div class="mt-2" id="addFriendMessage"></div>
-                                <button type="button" class="btn btn-primary mt-2" id="sendFriendRequestButton">Enviar Solicitação</button>
-                            </div>
-    
-                            <!-- Seção para visualizar solicitações recebidas -->
-                            <div style="flex: 1;">
-                                <h6 style="margin-bottom: 15px;">Solicitações Recebidas</h6>
-                                <ul id="requestsList" class="list-group" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"></ul>
-                            </div>
-                        </div>
-                        <div class="modal-footer" style="justify-content: flex-end;">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
     
         document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -665,5 +357,3 @@ document.addEventListener('DOMContentLoaded', async function () {
     socket.on('groupMessage', (message) => {
         displayGroupMessage(message);
     });
-});
-
